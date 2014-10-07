@@ -32,7 +32,6 @@ app.get('/query/:searchEngine', function(req, resp) {
         resp.status(400).send({
             error: 'Invalid Search Engine: Supports only google, yahoo and bing'
         });
-        return;
     }
     if (searchQuery === undefined) {
         resp.status(400).send({
