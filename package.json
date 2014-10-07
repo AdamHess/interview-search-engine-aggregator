@@ -1,7 +1,7 @@
 {
   "name": "interview",
   "version": "0.0.0",
-  "description": "",
+  "description": "Create a full stack application that will send a request to a server and the server will return the search results from three search engines. (In this case google bing and yahoo)",
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -11,11 +11,19 @@
   "license": "MIT",
   "dependencies": {
     "express": "~4.9.5",
-    "hbs": "~2.7.0",
     "path": "~0.4.9",
     "soupselect": "~0.2.0",
     "request": "~2.45.0",
     "htmlparser": "~1.7.7",
     "htmlparser-to-html": "0.0.5"
-  }
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/TheSpiderPig/interview-search-engine-aggregator.git"
+  },
+  "bugs": {
+    "url": "https://github.com/TheSpiderPig/interview-search-engine-aggregator/issues"
+  },
+  "homepage": "https://github.com/TheSpiderPig/interview-search-engine-aggregator"
 }
