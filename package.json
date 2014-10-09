@@ -10,12 +10,13 @@
   "author": "Adam Hess",
   "license": "MIT",
   "dependencies": {
+    "async": "^0.9.0",
+    "cheerio": "^0.17.0",
     "express": "~4.9.5",
-    "path": "~0.4.9",
-    "soupselect": "~0.2.0",
-    "request": "~2.45.0",
     "htmlparser": "~1.7.7",
-    "htmlparser-to-html": "0.0.5"
+    "htmlparser-to-html": "0.0.5",
+    "path": "~0.4.9",
+    "request": "~2.45.0",
   },
   "devDependencies": {},
   "repository": {
