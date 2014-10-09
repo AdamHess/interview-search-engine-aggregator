@@ -1,3 +1,4 @@
+'use strict';
 var cheerio = require('cheerio');
 
 
@@ -73,4 +74,4 @@ module.exports = {
     'bing': bingProcessingFunction,
     'yahoo': yahooProcessingFunction
 
-}
+};
