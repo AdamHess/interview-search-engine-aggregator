@@ -13,7 +13,7 @@ $(function() {
         }
     });
 
-    $('#query').change(function() {
+    $('#query').keyup(function() {
         if ($(this).val()) {
             $('#submit_button').prop('disabled', false);
         }
