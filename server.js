@@ -1,13 +1,16 @@
 'use strict';
-
+// libraries 
 var path = require('path'),
     express = require('express'),
     request = require('request'),
     async = require('async'),
     select = require('soupselect').select,
     htmlparser = require('htmlparser'),
-    cheerio = require('cheerio'),
     parserToHtml = require('htmlparser-to-html');
+
+//local deps 
+var processingFunctions = require('./processing_functions');
+
 
 
 
@@ -15,7 +18,8 @@ var path = require('path'),
 
 var queryUrls = {
     'bing': 'http://www.bing.com/search?q=',
-    'yahoo': 'https://search.yahoo.com/search?q='
+    'yahoo': 'https://search.yahoo.com/search?q=',
+    'google': 'http://ajax.googleapis.com/ajax/services/search/web?v=1.0&rsz=8&q='
 };
 //helper function 
 function generateQueryURL(query, searchEngine) {
@@ -93,31 +97,7 @@ app.get('/query/:searchEngine', function(req, resp) {
 
 });
 
-function processGoogleRequest(query, callback) {
-    request.get('http://ajax.googleapis.com/ajax/services/search/web?v=1.0&rsz=8&q=' + query,
-        function(error, response, body) {
-            if (error) {
-                callback(error, []);
-                return;
-            }
-            var searchResults = body;
-            if (typeof body !== 'object') {
-                searchResults = JSON.parse(body);
-            }
 
-            var googleResults = [];
-            searchResults.responseData.results.forEach(function(element) {
-                var aResult = {
-                    url: element.url,
-                    title: element.title,
-                    description: element.content
-                };
-                googleResults.push(aResult);
-            });
-            callback(null, googleResults);
-
-        });
-}
 
 
 
@@ -130,24 +110,25 @@ app.get('/aggregated_query/:query', function(req, resp) {
     async.parallel({
         google: function(callback) {
             //use google's api's to generate results 
-            processGoogleRequest(query, callback);
+            processSearchRequest(generateQueryURL(query, 'google'), processingFunctions.google, callback);
         },
         bing: function(callback) {
-            processSearchRequest(generateQueryURL(query, 'bing'), bingProcessingFunction, callback);
+            processSearchRequest(generateQueryURL(query, 'bing'), processingFunctions.bing, callback);
 
         },
         yahoo: function(callback) {
-            processSearchRequest(generateQueryURL(query, 'yahoo'), yahooProcessingFunction, callback);
+            processSearchRequest(generateQueryURL(query, 'yahoo'), processingFunctions.yahoo, callback);
         },
     }, function(error, results) {
         if (error) {
-            resp.status(200).send({error: "Error Handling Request: " + error});
-        }
-        else {
+            resp.status(200).send({
+                error: 'Error Handling Request: ' + error
+            });
+        } else {
             results.query = query;
-            resp.status(200).send(results);    
+            resp.status(200).send(results);
         }
-        
+
     });
 
 
@@ -164,53 +145,12 @@ function processSearchRequest(queryUrl, processingFunction, callback) {
                 callback(error, []);
                 return;
             }
-            var $ = cheerio.load(body);
-            var queryResults = processingFunction($);
+            var queryResults = processingFunction(body);
             callback(null, queryResults);
         });
 }
 
-function yahooProcessingFunction($) {
 
-    var yahooResults = [];
-    $('.res').each(function() {
-        var urlAndTitle = $(this).find('h3 a');
-        var url = urlAndTitle.attr('href');
-        var title = $(urlAndTitle).text();
-        var $desc = $(this).find('.res .abstr');
-        var description = $desc.first().text();
-
-        var aResult = {
-            'url': url,
-            'title': title,
-            'description': description
-        };
-        yahooResults.push(aResult);
-    });
-    return yahooResults;
-}
-
-
-function bingProcessingFunction($) {
-    var bingResults = [];
-    $('.b_algo').each(function() {
-        var urlAndTitle = $(this).find('h2 a');
-        var url = urlAndTitle.attr('href');
-        var title = $(urlAndTitle).text();
-        var $desc = $(this).find('.b_caption p');
-        var description = $desc.first().text();
-
-        var aResult = {
-            'url': url,
-            'title': title,
-            'description': description
-        };
-        bingResults.push(aResult);
-    });
-
-    return bingResults;
-
-}
 
 
 var port = 9000;
