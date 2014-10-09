@@ -5,14 +5,11 @@ var request = require('request'),
 
 var processingFunctions = require('./processing_functions');
 
-
-
 // callback parameters are
 // error, result 
 //if any of the queries fail the rest of processing will stop
-module.exports = function (query, callback) {
-
-
+module.exports = function(query, callback) {
+    //run requests in parallel
     async.parallel({
         Google: function(callback) {
             //use google's api's to generate results 
@@ -26,7 +23,7 @@ module.exports = function (query, callback) {
             processSearchRequest(generateQueryURL(query, 'yahoo'), processingFunctions.yahoo, callback);
         }
     }, callback);
-    
+
 };
 
 
@@ -45,7 +42,6 @@ function generateQueryURL(query, searchEngine) {
 //specialized handling is needed on a case by case basis
 
 function processSearchRequest(queryUrl, processingFunction, callback) {
-
     request.get(queryUrl,
         function(error, response, body) {
             if (error) {

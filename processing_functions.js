@@ -4,7 +4,8 @@ var cheerio = require('cheerio');
 
 //Google has its own freely available API 
 //its easier/better than scraping the webpage manually
-
+//be aware that they have a limited number of requests you can send 
+// in a given timeframe 
 function googleProcessingFunction(body) {
     var searchResults = JSON.parse(body);
     var googleResults = [];
@@ -30,7 +31,6 @@ function googleProcessingFunction(body) {
 
 function yahooProcessingFunction(body) {
     var $ = cheerio.load(body);
-
     var yahooResults = [];
     $('.res').each(function() {
         var urlAndTitle = $(this).find('h3 a');

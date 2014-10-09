@@ -4,22 +4,23 @@ var path = require('path'),
     express = require('express'),
     hbs = require('hbs');
 
-
-
 //local deps 
 var queryRunner = require('./query_runner');
-var app = express();
 
+var app = express();
+//set up templating engine 
 app.set('view engine', 'hbs');
 app.engine('hbs', hbs.__express);
 
-// file server for everything in the publc directory 
+//www.url.com/ will send user the index.html file
 app.get('/', function(req, resp) {
-    resp.sendfile(path.resolve('./public/index.html'));
+    resp.sendFile(path.resolve('./public/index.html'));
 });
+
+// file server for everything in the publc directory 
 app.use(express.static(path.resolve('./public')));
 
-
+//allows for async request for updating the page via query
 app.get('/aggregated_query/:query', function(req, resp) {
     var query = req.param('query');
     //process all requests in parallel and then send response when all is processed
@@ -35,18 +36,16 @@ app.get('/aggregated_query/:query', function(req, resp) {
             };
             resp.status(200).send(serviceResponse);
         }
-
     });
-
 });
 
-//will return a page with the query processed as a template 
+//runs a query and sends a templated page with the query results
 app.get('/query/:query', function(req, resp) {
     var query = req.param('query');
-
     //process all requests in parallel and then send response when all is processed
     queryRunner(query, function(error, results) {
         if (error) {
+            //if any one query fails, they all fail.
             resp.status(200).send({
                 error: 'Error Handling Request: ' + error
             });
@@ -55,20 +54,10 @@ app.get('/query/:query', function(req, resp) {
                 'searchProvider': results,
                 'query': query
             };
-
             resp.render(path.resolve('./public/index.template.hbs'), serviceResponse);
-        
         }
-
     });
-
 });
-
-
-
-
-
-
 
 var port = 9000;
 app.listen(port);

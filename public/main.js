@@ -1,5 +1,9 @@
 'use strict';
 $(function() {
+    //this is loaded manually (until this is switched over to requirejs)
+    //this is to prevent the backend templating engine from rendering this template 
+    //so that we can reuse the same code for both the index.html and the /query/ 
+    //services/urls
     $('footer').load('/search_result_template.html');
 
     $('#submit_button').click(function() {
@@ -7,9 +11,16 @@ $(function() {
         if (query) {
             getAggregatedResults(query);
         }
-
-
     });
+
+    $('#query').change(function() {
+        if ($(this).val()) {
+            $('#submit_button').prop('disabled', false);
+        }
+        else {
+            $('#submit_button').prop('disabled', true);   
+        }
+    })
 
     function getAggregatedResults(query) {
             $('#query_results').empty();
