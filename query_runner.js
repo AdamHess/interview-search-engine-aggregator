@@ -4,39 +4,25 @@ var request = require('request'),
     async = require('async');
 
 var processingFunctions = require('./processing_functions');
-
-// callback parameters are
-// error, result 
-//if any of the queries fail the rest of processing will stop
-module.exports = function(query, callback) {
-    //run requests in parallel
-    async.parallel({
-        Google: function(callback) {
-            //use google's api's to generate results 
-            processSearchRequest(generateQueryURL(query, 'google'), processingFunctions.google, callback);
-        },
-        Bing: function(callback) {
-            processSearchRequest(generateQueryURL(query, 'bing'), processingFunctions.bing, callback);
-
-        },
-        Yahoo: function(callback) {
-            processSearchRequest(generateQueryURL(query, 'yahoo'), processingFunctions.yahoo, callback);
-        }
-    }, callback);
-
+var searchEngines = {
+    'Bing': {
+        searchUrl: 'http://www.bing.com/search?q=',
+        processingFunction: processingFunctions.bing
+    },
+    'Yahoo': {
+        searchUrl: 'https://search.yahoo.com/search?q=',
+        processingFunction: processingFunctions.yahoo
+    },
+    'Google':{
+        searchUrl: 'http://ajax.googleapis.com/ajax/services/search/web?v=1.0&rsz=8&q=',
+        processingFunction: processingFunctions.google
+    }
 };
 
-
-var queryUrls = {
-    'bing': 'http://www.bing.com/search?q=',
-    'yahoo': 'https://search.yahoo.com/search?q=',
-    'google': 'http://ajax.googleapis.com/ajax/services/search/web?v=1.0&rsz=8&q='
-};
 //helper function 
 function generateQueryURL(query, searchEngine) {
-    return queryUrls[searchEngine] + query;
+    return searchEngines[searchEngine].searchUrl + query;
 }
-
 
 //Keep things DRY by writing generic processes function
 //specialized handling is needed on a case by case basis
@@ -52,3 +38,19 @@ function processSearchRequest(queryUrl, processingFunction, callback) {
             callback(null, queryResults);
         });
 }
+
+
+// callback parameters are
+// error, result 
+//if any of the queries fail the rest of processing will stop
+module.exports = function(query, callback) {
+    var parallelRequests = {};
+    for (var engine in searchEngines) {
+        parallelRequests[engine] = function(callback) {
+            processSearchRequest(generateQueryURL(query, engine), searchEngines[engine].processingFunction, callback);
+        };
+    }
+    async.parallel(parallelRequests, callback);
+
+};
+
