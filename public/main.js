@@ -1,12 +1,72 @@
 $(function() {
     $('#submit_button').click(function() {
+        var useAsync = $('#use_async').val();
         var query = $('#query').val();
+        if (useAsync) {
+            makeAsynchronousRequest(query);
+        } else {
+            makeSynchronousRequest(query);
+        }
+
+
+    });
+
+    function makeSynchronousRequest(query) {
+
+        if (query) {
+            cleanAllSearchResults();
+            showAllLoadingWheels();
+            $.ajax({
+                type: 'GET',
+                url: '/aggregated_query/' + query + '/',
+                contentType: 'application/json',
+                success: function(data) {
+                    var googleResults = Handlebars.compile($('#google_template').html())(data);
+                    var yahooResults = Handlebars.compile($('#bing_template').html())(data);
+                    var bingResults = Handlebars.compile($('#yahoo_template').html())(data);
+                    
+                    $('#result_google').html(googleResults);
+                    $('#result_bing').html(bingResults);
+                    $('#result_yahoo').html(yahooResults);
+                    
+                },
+                failure: function(errorMsg) {
+                    displayResult(JSON.stringify(errorMsg));
+
+                }
+
+            }).always(function() {
+                hideAllLoadingWheels();
+            });
+        }
+    }
+
+    function hideAllLoadingWheels() {
+        hideLoadingWheel('google');
+        hideLoadingWheel('yahoo');
+        hideLoadingWheel('bing');
+    }
+
+    function showAllLoadingWheels() {
+        showLoadingWheel('google');
+        showLoadingWheel('yahoo');
+        showLoadingWheel('bing');
+    }
+
+    function cleanAllSearchResults() {
+        cleanPreviousSearchResult('google');
+        cleanPreviousSearchResult('yahoo');
+        cleanPreviousSearchResult('bing');
+    }
+
+    //sends 3 asyncrhnous requests to the server they dont all need to execute correctly
+    //in order to display data on the screen
+    function makeAsynchronousRequest(query) {
         //they run Asynchronously so our user gets some information back
         runSearch('google', query);
         runSearch('bing', query);
         runSearch('yahoo', query);
-    });
-
+    }
 
     function runSearch(searchEngine, query) {
         if (query) {
@@ -37,7 +97,7 @@ $(function() {
             });
         }
     }
-	//helper functions    
+    //helper functions    
     function hideLoadingWheel(searchEngine) {
         $('#loading_wheel_' + searchEngine).hide();
 
@@ -60,7 +120,7 @@ $(function() {
 
     //format the data from the specific provider to clean 
     // up the HTML that it sends back
- 
+
     window.format_data_bing = function() {
         //convert from using ordered lists to unordered list (gets rid of the numbers)
         $('#result_bing ol').replaceWith(function() {
