@@ -1,6 +1,6 @@
 $(function() {
     $('#submit_button').click(function() {
-        var useAsync = $('#use_async').val();
+        var useAsync = $('#use_async').prop('checked');
         var query = $('#query').val();
         if (useAsync) {
             makeAsynchronousRequest(query);
