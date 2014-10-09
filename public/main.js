@@ -1,5 +1,7 @@
 'use strict';
 $(function() {
+    $('footer').load('/search_result_template.html');
+
     $('#submit_button').click(function() {
         var query = $('#query').val();
         if (query) {
@@ -14,7 +16,7 @@ $(function() {
             $('#loading_wheel').show();
             $.ajax({
                 type: 'GET',
-                url: '/aggregated_query/' + query + '/',
+                url: '/aggregated_query/' + query,
                 contentType: 'application/json',
                 success: function(data) {
                     var googleResults = Handlebars.compile($('#query_template').html())(data);                    

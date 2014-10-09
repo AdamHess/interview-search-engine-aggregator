@@ -6,21 +6,25 @@ var cheerio = require('cheerio');
 //its easier/better than scraping the webpage manually
 
 function googleProcessingFunction(body) {
-
-    var searchResults = body;
-    if (typeof body !== 'object') {
-        searchResults = JSON.parse(body);
-    }
-
+    var searchResults = JSON.parse(body);
     var googleResults = [];
-    searchResults.responseData.results.forEach(function(element) {
+    if (searchResults.responseStatus !== 200) {
         var aResult = {
-            url: element.url,
-            title: element.title,
-            description: element.content
-        };
+            url: '',
+            title: searchResults.responseStatus + ' Error Making Request to Google; their apis allow for limited number of requests per second' ,
+            description: searchResults.responseDetails
+        }
         googleResults.push(aResult);
-    });
+    } else {
+        searchResults['responseData']['results'].forEach(function(element) {
+            var aResult = {
+                url: element.url,
+                title: element.title,
+                description: element.content
+            };
+            googleResults.push(aResult);
+        });
+    }
     return googleResults;
 }
 

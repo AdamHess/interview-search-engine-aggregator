@@ -1,0 +1,32 @@
+<html>
+	<head>
+	<script src="../bower_components/jquery/dist/jquery.min.js"> </script>
+	<script src="../bower_components/handlebars/handlebars.min.js"> </script>
+	<script src="../main.js"> </script>
+
+	</head>
+	<body>
+		<div id="request_query">
+			Send request for Search 
+			Site to Check: <input type="text" id="query" name="query" value="{{query}}"> <br>
+			<button id="submit_button" type="button">Submit Request</button>
+		</div>
+
+		<div id="query_results">  
+			{{#each searchProvider}}
+			<h1>{{@key}}</h1>
+				<ul>
+					{{#each this}}
+						<li><h3><a href={{url}}>{{{title}}}</a></h3>
+						{{{description}}}
+						</li>
+					{{/each}}
+				</ul>
+			{{/each}}
+		</div> 
+		<img id="loading_wheel" src="../loading.gif" alt="loading wheel" style="display:none; width: 50px; height: 50px:">
+	</body>
+	<footer>
+	</footer>
+
+</html>

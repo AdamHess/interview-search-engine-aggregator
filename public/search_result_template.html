@@ -1,0 +1,12 @@
+<template  id="query_template"> 
+	{{#each searchProvider}}
+		<h1>{{@key}}</h1>
+		<ul>
+			{{#each this}}
+				<li><h3><a href={{url}}>{{{title}}}</a></h3>
+				{{{description}}}
+				</li>
+			{{/each}}
+		</ul>
+	{{/each}}
+</template>
