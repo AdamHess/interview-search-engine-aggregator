@@ -16,7 +16,7 @@
     "htmlparser": "~1.7.7",
     "htmlparser-to-html": "0.0.5",
     "path": "~0.4.9",
-    "request": "~2.45.0",
+    "request": "~2.45.0"
   },
   "devDependencies": {},
   "repository": {
