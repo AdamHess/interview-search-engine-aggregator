@@ -59,7 +59,7 @@ app.get('/query/:query', function(req, resp) {
     });
 });
 
-var port = 9000;
+var port = 80;
 app.listen(port);
 
 console.log('Application running on Port: ' + port);
