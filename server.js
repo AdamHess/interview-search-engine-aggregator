@@ -8,6 +8,8 @@ var path = require('path'),
 var queryRunner = require('./query_runner');
 
 var app = express();
+app.set('port', (process.env.PORT || 5000))
+
 //set up templating engine 
 app.set('view engine', 'hbs');
 app.engine('hbs', hbs.__express);
@@ -59,7 +61,6 @@ app.get('/query/:query', function(req, resp) {
     });
 });
 
-var port = 80;
-app.listen(port);
-
-console.log('Application running on Port: ' + port);
+app.listen(app.get('port'), function() {
+    console.log('Application running on Port: ' + app.get('port'));
+});
