@@ -27,7 +27,7 @@ $(function() {
             $('#loading_wheel').show();
             $.ajax({
                 type: 'GET',
-                url: '/aggregated_query/' + query,
+                url: location.origin+'/aggregated_query/' + query,
                 contentType: 'application/json',
                 success: function(data) {
                     var googleResults = Handlebars.compile($('#query_template').html())(data);                    
