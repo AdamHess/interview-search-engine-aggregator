@@ -6,8 +6,9 @@ You can see a deployment of this app on heroku here:
 
 http://desolate-mesa-3831.herokuapp.com/
 
-You can run queries directly from your browser by:
-http://desolate-mesa-3831.herokuapp.com/query/<SearchTermHere>
+You can run queries directly from your browser by
+
+http://desolate-mesa-3831.herokuapp.com/query/::SearchTermHere::
 
 if the deployment is inaccessable you can synch it down and deploy it to your own dynamo: 
 
