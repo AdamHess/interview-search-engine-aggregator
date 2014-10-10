@@ -1,2 +1,2 @@
 cd ./public
-../node_modules/bower/bin/bower install
+../node_modules/bower/bin/bower install -silent
