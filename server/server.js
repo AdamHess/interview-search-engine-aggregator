@@ -61,6 +61,6 @@ app.get('/query/:query', function(req, resp) {
     });
 });
 
-app.listen(app.get('port'), function() {
-    console.log('Application running on Port: ' + app.get('port'));
-});
+
+module.exports = app;
+
